@@ -14,6 +14,10 @@ const createServer  = async () => {
 		req.log.error(error.toString());
 		res.send({ error });
 	});
+	fastify.get('/', (req, res, next) => {
+		res.send({ status: 'ok' });
+	});
+
 
 	return fastify;
 };
