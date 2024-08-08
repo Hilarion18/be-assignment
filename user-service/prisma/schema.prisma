@@ -1,0 +1,83 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   title     String   @db.VarChar(255)
+//   content   String?
+//   published Boolean  @default(false)
+//   author    User     @relation(fields: [authorId], references: [id])
+//   authorId  Int
+// }
+
+// model Profile {
+//   id     Int     @id @default(autoincrement())
+//   bio    String?
+//   user   User    @relation(fields: [user_id], references: [id])
+//   user_id Int     @unique
+// }
+
+// model User {
+//   id      Int      @id @default(autoincrement())
+//   email   String   @unique
+//   name    String?
+//   posts   Post[]
+//   profile Profile?
+// }
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @unique
+  password String
+  fullname String
+  email String @unique
+  created_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+  PaymentAccount PaymentAccount[]
+}
+
+model PaymentAccount {
+  id Int @id @default(autoincrement())
+  type String 
+  currency String
+  amount Int @default(0)
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+
+  PaymentHistory PaymentHistory[]
+  Transaction Transaction[]
+}
+
+model PaymentHistory {
+  id Int @id @default(autoincrement())
+  payment PaymentAccount @relation(fields: [payment_account_id], references: [id])
+  payment_account_id Int
+  currency String
+  amount Int @default(0)
+  created_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+}
+
+model Transaction {
+  id Int @id @default(autoincrement())
+  payment PaymentAccount @relation(fields: [payment_account_id], references: [id])
+  payment_account_id Int
+  currency String
+  amount Int @default(0)
+  to_address String
+  from_address String
+  status String
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  deleted_at DateTime @default(now())
+}
